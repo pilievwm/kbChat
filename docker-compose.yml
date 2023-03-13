@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  flaskapp:
+    build: .
+    restart: always
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      FLASK_ENV: development
+    env_file:
+      - .env

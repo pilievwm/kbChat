@@ -1,0 +1,6 @@
+flask
+numpy
+openai
+pandas
+python-dotenv
+tiktoken
