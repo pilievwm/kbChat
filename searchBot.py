@@ -49,7 +49,7 @@ def order_document_sections_by_query_similarity(query: str, contexts: dict[(str,
         (vector_similarity(query_embedding, doc_embedding), doc_index) for doc_index, doc_embedding in contexts.items()
     ], reverse=True)
     
-    return document_similarities[:5]
+    return document_similarities[:1]
 
 MAX_SECTION_LEN = 1900
 MIN_SECTION_LEN = 20
