@@ -11,11 +11,11 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 # Update the models to use
-COMPLETIONS_MODEL = "gpt-3.5-turbo"
+COMPLETIONS_MODEL = "gpt-4"
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
 # Read the CSV into a pandas DataFrame
-data_dir = '/app/data'
+data_dir = 'data'
 df = pd.read_csv(os.path.join(data_dir, 'articles_count.csv'))
 df = df.set_index(["title"])
 
@@ -85,8 +85,8 @@ def construct_prompt(question: str, context_embeddings: dict, df: pd.DataFrame) 
         chosen_sections_indexes.append(str(section_index))
     
     header = """Act as CloudCart support agent. \n
-                Let\'s think step by step trought the provided context. \n
-                Provide the Link URL if it is shown at the answer! If the context is empty, say "No answer" \n
+                Let\'s think step by step trought the provided question and fine the best possible solution for the customer\'s problem \n
+                If the context is empty, say "No answer" \n
                 \n
                 Context:\n 
             """
@@ -105,7 +105,7 @@ def answer_query_with_context(
     query: str,
     df: pd.DataFrame,
     document_embeddings: dict[(str, str), np.array],
-    show_prompt: bool = False
+    show_prompt: bool = True
 ) -> str:
 
     prompt = construct_prompt(

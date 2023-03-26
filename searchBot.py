@@ -14,7 +14,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
 # Read the CSV into a pandas DataFrame
-data_dir = '/app/data'
+data_dir = 'data'
 df = pd.read_csv(os.path.join(data_dir, 'articles_count.csv'))
 df = df.set_index(["title"])
 
@@ -49,7 +49,7 @@ def order_document_sections_by_query_similarity(query: str, contexts: dict[(str,
         (vector_similarity(query_embedding, doc_embedding), doc_index) for doc_index, doc_embedding in contexts.items()
     ], reverse=True)
     
-    return document_similarities[:1]
+    return document_similarities[:3]
 
 MAX_SECTION_LEN = 1900
 MIN_SECTION_LEN = 20
