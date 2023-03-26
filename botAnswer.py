@@ -50,7 +50,7 @@ def order_document_sections_by_query_similarity(query: str, contexts: dict[(str,
         (vector_similarity(query_embedding, doc_embedding), doc_index) for doc_index, doc_embedding in contexts.items()
     ], reverse=True)
     
-    return document_similarities[:5]
+    return document_similarities[:1]
 
 MAX_SECTION_LEN = 2900
 MIN_SECTION_LEN = 20
@@ -74,19 +74,19 @@ def construct_prompt(question: str, context_embeddings: dict, df: pd.DataFrame) 
 
     for _, section_index in most_relevant_document_sections:
         document_section = df.loc[section_index]
-        section_length = len(document_section.description.split())
+        section_length = len(str(document_section['description']).split())
         if section_length < MIN_SECTION_LEN:
             continue
         chosen_sections_len += section_length + separator_len
         if chosen_sections_len > MAX_SECTION_LEN:
             break
                 
-        chosen_sections.append(SEPARATOR + document_section.description.replace("\n", " ") + "\nLink: " + document_section.url.replace("\n", " "))
+        chosen_sections.append(document_section.description.replace("\n", " ") + "\nLink: " + document_section.url.replace("\n", " "))
         chosen_sections_indexes.append(str(section_index))
     
-    header = """Act as CloudCart support agent. \n
-                Let\'s think step by step trought the provided question and fine the best possible solution for the customer\'s problem \n
-                If the context is empty, say "No answer" \n
+    header = """Act as CloudCart support agent. Respond in Bulgarian! \n
+                Let\'s think step by step trought the provided question and fine the best possible solution for the customer\'s problem or question \n
+                If the context is empty, say "No answer". If there is a link starting with https definatly include it into your response for more infromation \n
                 \n
                 Context:\n 
             """
