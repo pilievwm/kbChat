@@ -15,7 +15,7 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 
 # Read the CSV into a pandas DataFrame
 data_dir = 'data'
-df = pd.read_csv(os.path.join(data_dir, 'articles_count.csv'))
+df = pd.read_csv(os.path.join(data_dir, 'all_count.csv'))
 df = df.set_index(["title"])
 
 def get_embedding(text: str, model: str=EMBEDDING_MODEL) -> list[float]:
@@ -37,7 +37,7 @@ def load_embeddings(fname: str) -> dict[tuple[str, str], list[float]]:
     }
 
 # Compute the embeddings for each row in the DataFrame
-document_embeddings = load_embeddings(os.path.join(data_dir, 'embeddings.csv'))
+document_embeddings = load_embeddings(os.path.join(data_dir, 'all_embeddings.csv'))
 
 def vector_similarity(x: list[float], y: list[float]) -> float:
     return np.dot(np.array(x), np.array(y))

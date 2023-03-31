@@ -10,14 +10,14 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
-df = pd.read_csv('data/articles.csv', keep_default_na=False).replace('\n', ' ', regex=True)
+df = pd.read_csv('data/all.csv', keep_default_na=False).replace('\n', ' ', regex=True)
 df['tokens'] = df['description'].apply(lambda x: len(x.split()))
 
 # Create a new DataFrame that contains only the description and token_count columns
-count_df = df[['category', 'folder', 'title', 'description', 'url', 'tokens']].copy()
+count_df = df[['title', 'description', 'url', 'tokens']].copy()
 
 # Save the new DataFrame to a CSV file
-count_df.to_csv('data/articles_count.csv', index=False)
+count_df.to_csv('data/all_count.csv', index=False)
 
 # Continue with the rest of your code using the new CSV file
 count_df = count_df.set_index(["title"])
@@ -43,5 +43,5 @@ def save_embeddings_to_csv(embeddings: dict, fname: str):
     count_df.to_csv(fname, index=False)
 
 embeddings = compute_doc_embeddings(count_df)
-save_embeddings_to_csv(embeddings, "data/embeddings.csv")
+save_embeddings_to_csv(embeddings, "data/all_embeddings.csv")
 
