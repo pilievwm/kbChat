@@ -42,16 +42,16 @@ document_embeddings = load_embeddings(os.path.join(data_dir, 'embeddings.csv'))
 def vector_similarity(x: list[float], y: list[float]) -> float:
     return np.dot(np.array(x), np.array(y))
 
-def order_document_sections_by_query_similarity(query: str, contexts: dict[(str, str), np.array]) -> list[(float, (str, str))]:
+def order_document_sections_by_query_similarity(query: str, contexts: dict[(str, str), np.array], num_results: int = 3) -> list[(float, (str, str))]:
     query_embedding = get_embedding(query)
     
     document_similarities = sorted([
         (vector_similarity(query_embedding, doc_embedding), doc_index) for doc_index, doc_embedding in contexts.items()
     ], reverse=True)
     
-    return document_similarities[:3]
+    return document_similarities[:num_results]
 
-MAX_SECTION_LEN = 1900
+MAX_SECTION_LEN = 2000
 MIN_SECTION_LEN = 20
 SEPARATOR = "\n* "
 ENCODING = "cl100k_base"  # encoding for text-embedding-ada-002
@@ -61,9 +61,9 @@ separator_len = len(encoding.encode(SEPARATOR))
 
 f"Context separator contains {separator_len} tokens"
 
-def construct_prompt(search: str, context_embeddings: dict, df: pd.DataFrame) -> str:
+def construct_prompt(search: str, context_embeddings: dict, df: pd.DataFrame, num_results: int = 3) -> str:
 
-    most_relevant_document_sections = order_document_sections_by_query_similarity(search, context_embeddings)
+    most_relevant_document_sections = order_document_sections_by_query_similarity(search, context_embeddings, num_results)
 
     chosen_sections = []
     chosen_sections_len = 0
@@ -87,21 +87,23 @@ def answer_query_with_context(
     query: str,
     df: pd.DataFrame,
     document_embeddings: dict[(str, str), np.array],
+    num_results: int = 3,
     show_prompt: bool = False
 ) -> str:
 
     prompt = construct_prompt(
         query,
         document_embeddings,
-        df
+        df,
+        num_results
     )
     return prompt
 
 
 
-def answer_bot(search):
+def answer_bot(search, num_results=3):
     query = search
-    answer = answer_query_with_context(query, df, document_embeddings)
+    answer = answer_query_with_context(query, df, document_embeddings, num_results)
 
     # your logic to generate the answer based on the question
     answer_bot = answer

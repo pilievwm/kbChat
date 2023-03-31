@@ -33,8 +33,9 @@ def greeting():
 @token_required
 def finding():
     search = request.json.get('search')
+    num_results = request.json.get('num_results', 3)  # Get the num_results value from the request JSON, default to 3 if not provided
     import searchBot
-    response = searchBot.answer_bot(search)
+    response = searchBot.answer_bot(search, num_results)
     return response
 
 if __name__ == '__main__':
